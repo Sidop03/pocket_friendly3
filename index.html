@@ -9,14 +9,17 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f3f3f3;
+      background-image: url('https://img.etimg.com/thumb/width-640,height-480,imgsize-84658,resizemode-75,msid-87577288/mf/analysis/which-mutual-fund-scheme-should-i-invest-next.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
     .container {
-      background-color: #fff;
+      background-color: #ffffff;
       border-radius: 10px;
       padding: 20px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -60,14 +63,14 @@
     }
     .schemes-list li a {
       text-decoration: none;
-      color: #333;
+      color: #645be7;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Expense Tracker</h1>
-    <label for="monthlySalary">Enter your monthly salary:</label>
+    <label for="monthlySalary">Enter your monthly pocket money:</label>
     <input type="number" id="monthlySalary" placeholder="Enter monthly salary">
     <button id="calculateButton">Start Tracking</button>
     <div id="dailyLimit" class="daily-limit"></div>
@@ -91,11 +94,11 @@
       <button id="addSavingButton">Add to Savings</button>
     </div>
     <div id="licSchemes" class="schemes" style="display: none;">
-      <h2>LIC Schemes</h2>
+      <h2>LIC SCHEMES TO INVEST</h2>
       <ul id="licSchemesList" class="schemes-list"></ul>
     </div>
     <div id="mutualFundSchemes" class="schemes" style="display: none;">
-      <h2>Mutual Fund Schemes</h2>
+      <h2>MUTUAL FUND SCHEMES TO INVEST</h2>
       <ul id="mutualFundSchemesList" class="schemes-list"></ul>
     </div>
   </div>
@@ -256,7 +259,7 @@
     const licSchemes = [
       { name: 'LIC Bima Jyoti', link: 'https://licindia.in/web/guest/lic-s-bima-jyoti-plan-no.-860-uin-no.-512n339v01-', minSavings: 5000 },
       { name: 'LIC Jeevan Umang', link: 'https://licindia.in/hi/lics-jeevan-umang-plan-no.-945-uin-no.-512n312v02', minSavings: 10000 },
-      // Add more LIC schemes
+      // Add more LIC SCHEMES TO INVEST 
     ];
 
     const mutualFundSchemes = [
