@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      text-align: center; 
+    }
+    .notification {
+      color: red;
+      margin-top: 10px;
+    }
+    .remaining-money {
+      margin-top: 20px;
+    }
+    .expense-input {
+      margin-top: 20px;
+    }
+    .daily-limit {
+      margin-top: 20px;
+    }
+    .day-count {
+      margin-top: 10px;
+    }
+    .savings-info {
+      margin-top: 20px;
+    }
+    .savings-total {
+      margin-top: 10px;
+    }
+    .savings-notification {
+      margin-top: 10px;
+    }
+    .schemes {
+      margin-top: 20px;
+    }
+    .schemes-list {
+      list-style-type: none;
+      padding: 0;
+      text-align: left;
+    }
+    .schemes-list li {
+      margin-bottom: 10px;
+    }
+    .schemes-list li a {
+      text-decoration: none;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Expense Tracker</h1>
+    <label for="monthlySalary">Enter your monthly salary:</label>
+    <input type="number" id="monthlySalary" placeholder="Enter monthly salary">
+    <button id="calculateButton">Start Tracking</button>
+    <div id="dailyLimit" class="daily-limit"></div>
+    <div id="notification" class="notification"></div>
+    <div id="remainingMoney" class="remaining-money"></div>
+    <div id="dayCount" class="day-count"></div>
+    <div id="expenseInput" class="expense-input" style="display: none;">
+      <label for="dailyExpense">Enter today's expense:</label>
+      <input type="number" id="dailyExpense" placeholder="Enter daily expense">
+      <button id="addExpenseButton">Add Expense</button>
+    </div>
+    <div id="savingsInput" class="expense-input" style="display: none;">
+      <label for="savingsGoal">Set your savings goal:</label>
+      <input type="number" id="savingsGoal" placeholder="Enter savings goal">
+      <button id="setSavingButton">Set Savings Goal</button>
+    </div>
+    <div id="savingsInfo" class="savings-info" style="display: none;">
+      <h2>Savings Information</h2>
+      <div id="savingsTotal" class="savings-total"></div>
+      <div id="savingsNotification" class="savings-notification"></div>
+      <button id="addSavingButton">Add to Savings</button>
+    </div>
+    <div id="licSchemes" class="schemes" style="display: none;">
+      <h2>LIC Schemes</h2>
+      <ul id="licSchemesList" class="schemes-list"></ul>
+    </div>
+    <div id="mutualFundSchemes" class="schemes" style="display: none;">
+      <h2>Mutual Fund Schemes</h2>
+      <ul id="mutualFundSchemesList" class="schemes-list"></ul>
+    </div>
+  </div>
+  <script>
+    const calculateButton = document.getElementById('calculateButton');
+    const dailyLimitDiv = document.getElementById('dailyLimit');
+    const notificationDiv = document.getElementById('notification');
+    const remainingMoneyDiv = document.getElementById('remainingMoney');
+    const daysLeftDiv = document.getElementById('dayCount');
+    const expenseInputDiv = document.getElementById('expenseInput');
+    const addExpenseButton = document.getElementById('addExpenseButton');
+
+    const savingsInputDiv = document.getElementById('savingsInput');
+    const setSavingButton = document.getElementById('setSavingButton');
+    const savingsInfoDiv = document.getElementById('savingsInfo');
+    const savingsNotificationDiv = document.getElementById('savingsNotification');
+    const savingsTotalDiv = document.getElementById('savingsTotal');
+    const addSavingButton = document.getElementById('addSavingButton');
+
+    const licSchemesDiv = document.getElementById('licSchemes');
+    const licSchemesList = document.getElementById('licSchemesList');
+
+    const mutualFundSchemesDiv = document.getElementById('mutualFundSchemes');
+    const mutualFundSchemesList = document.getElementById('mutualFundSchemesList');
+
+    let monthlySalary = 0;
+    let dailyLimit = 0;
+    let daysLeft = 30;
+    let remainingSalary = 0;
+
+    let savingsGoal = 0;
+    let totalSavings = 0;
+
+    const populateSchemes = (schemesList, schemes) => {
+      schemes.forEach(scheme => {
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = scheme.link;
+        link.textContent = scheme.name;
+        listItem.appendChild(link);
+        schemesList.appendChild(listItem);
+      });
+    };
+
+    const populateSavingsSchemes = (savingsAmount) => {
+      licSchemesList.innerHTML = '';
+      mutualFundSchemesList.innerHTML = '';
+
+      const eligibleLICSchemes = licSchemes.filter(scheme => scheme.minSavings <= savingsAmount);
+      const eligibleMutualFundSchemes = mutualFundSchemes.filter(scheme => scheme.minSavings <= savingsAmount);
+
+      populateSchemes(licSchemesList, eligibleLICSchemes);
+      populateSchemes(mutualFundSchemesList, eligibleMutualFundSchemes);
+    };
+
+    calculateButton.addEventListener('click', () => {
+      monthlySalary = parseFloat(document.getElementById('monthlySalary').value);
+
+      if (isNaN(monthlySalary) || monthlySalary <= 0) {
+        notificationDiv.innerText = 'Please enter a valid monthly salary amount.';
+        return;
+      }
+
+      dailyLimit = monthlySalary / 30;
+      remainingSalary = monthlySalary;
+      daysLeft = 30;
+
+      dailyLimitDiv.innerHTML = `Daily Limit: $${dailyLimit.toFixed(2)}`;
+      daysLeftDiv.innerHTML = `Days Left: ${daysLeft}`;
+
+      calculateButton.disabled = true;
+      expenseInputDiv.style.display = 'block';
+      savingsInputDiv.style.display = 'block';
+      licSchemesDiv.style.display = 'block';
+      mutualFundSchemesDiv.style.display = 'block';
+
+      // Display investment schemes initially as well
+      populateSavingsSchemes(savingsGoal);
+    });
+
+    addExpenseButton.addEventListener('click', () => {
+      const dailyExpense = parseFloat(document.getElementById('dailyExpense').value);
+
+      if (isNaN(dailyExpense) || dailyExpense < 0) {
+        notificationDiv.innerText = 'Please enter a valid expense amount.';
+        return;
+      }
+
+      if (dailyExpense > remainingSalary) {
+        notificationDiv.innerText = 'Expense exceeds remaining salary!';
+        return;
+      }
+
+      if (dailyExpense > dailyLimit) {
+        const remainingDays = daysLeft - 1; // Exclude today
+        const adjustedExpenditure = (remainingSalary - dailyExpense) / remainingDays;
+
+        const notification = `You've exceeded your daily budget! Adjusting daily expenditure to $${adjustedExpenditure.toFixed(2)} for the rest of the month.`;
+        notificationDiv.innerText = notification;
+
+        dailyLimitDiv.innerHTML = `Daily Limit: $${adjustedExpenditure.toFixed(2)}`;
+        dailyLimit = adjustedExpenditure;
+      } else {
+        notificationDiv.innerText = 'Daily expenditure is within budget.';
+      }
+
+      remainingSalary -= dailyExpense;
+      daysLeft--;
+
+      if (daysLeft === 0) {
+        expenseInputDiv.style.display = 'none';
+        addExpenseButton.disabled = true;
+        notificationDiv.innerText = '30 days are over. Tracking completed.';
+      } else {
+        dailyLimit = remainingSalary / daysLeft;
+        dailyLimitDiv.innerHTML = `Daily Limit: $${dailyLimit.toFixed(2)}`;
+        daysLeftDiv.innerHTML = `Days Left: ${daysLeft}`;
+        remainingMoneyDiv.innerHTML = `Remaining money: $${remainingSalary.toFixed(2)}`;
+      }
+
+      // Update investment schemes based on the updated savings
+      populateSavingsSchemes(totalSavings);
+    });
+
+    setSavingButton.addEventListener('click', () => {
+      savingsGoal = parseFloat(document.getElementById('savingsGoal').value);
+
+      if (isNaN(savingsGoal) || savingsGoal < 0) {
+        savingsNotificationDiv.innerText = 'Please enter a valid savings goal amount.';
+        return;
+      }
+
+      savingsTotalDiv.innerHTML = `Total Savings Goal: $${savingsGoal.toFixed(2)}`;
+      savingsInfoDiv.style.display = 'block';
+      setSavingButton.disabled = true;
+
+      // Populate investment schemes based on the entered savings goal
+      populateSavingsSchemes(savingsGoal);
+    });
+
+    addSavingButton.addEventListener('click', () => {
+      const savingAmount = parseFloat(prompt('Enter the amount to add to savings:'));
+
+      if (isNaN(savingAmount) || savingAmount < 0) {
+        savingsNotificationDiv.innerText = 'Please enter a valid amount.';
+        return;
+      }
+
+      totalSavings += savingAmount;
+      savingsTotalDiv.innerHTML = `Total Savings: $${totalSavings.toFixed(2)}`;
+      savingsNotificationDiv.innerText = 'Amount added to savings.';
+
+      // Update investment schemes based on the updated savings
+      populateSavingsSchemes(totalSavings);
+    });
+
+    // Dummy scheme data (customize this as needed)
+    const licSchemes = [
+    { name: 'LIC Bima Jyoti', link: 'https://licindia.in/web/guest/lic-s-bima-jyoti-plan-no.-860-uin-no.-512n339v01-' },
+    { name: 'LIC Jeevan Umang', link: 'https://licindia.in/hi/lics-jeevan-umang-plan-no.-945-uin-no.-512n312v02-' },
+    { name: 'SIIP', link: 'https://licindia.in/hi/lic-s-siip-plan-no.-852-uin-no.-512l334v01-' },
+      // Add more LIC schemes
+    ];
+
+    const mutualFundSchemes = [
+    { name: 'Quant Small Cap Fund Direct Plan-Growth', link: 'https://www.etmoney.com/mutual-funds/quant-small-cap-fund-direct-plan-growth/16925' },
+    { name: 'Quant Infrastructure Fund Direct-Growth', link: 'https://www.etmoney.com/mutual-funds/quant-infrastructure-fund-direct-growth/16930' },
+    { name: 'Axis Small Cap Fund Direct-Growth', link: 'https://www.etmoney.com/mutual-funds/axis-small-cap-fund-direct-growth/21859' },
+      // Add more mutual fund schemes
+    ];
+
+    // Initial population of schemes (before user interaction)
+    populateSchemes(licSchemesList, licSchemes);
+    populateSchemes(mutualFundSchemesList, mutualFundSchemes);
+  </script>
+</body>
+</html>
