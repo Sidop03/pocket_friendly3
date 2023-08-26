@@ -163,8 +163,8 @@
       remainingSalary = monthlySalary;
       daysLeft = 30;
 
-      dailyLimitDiv.innerHTML = `Daily Limit: ₹₹{dailyLimit.toFixed(2)}`;
-      daysLeftDiv.innerHTML = `Days Left: ₹{daysLeft}`;
+      dailyLimitDiv.innerHTML = `Daily Limit: $${dailyLimit.toFixed(2)}`;
+      daysLeftDiv.innerHTML = `Days Left: ${daysLeft}`;
 
       calculateButton.disabled = true;
       expenseInputDiv.style.display = 'block';
@@ -193,10 +193,10 @@
         const remainingDays = daysLeft - 1; // Exclude today
         const adjustedExpenditure = (remainingSalary - dailyExpense) / remainingDays;
 
-        const notification = `You've exceeded your daily budget! Adjusting daily expenditure to ₹₹{adjustedExpenditure.toFixed(2)} for the rest of the month.`;
+        const notification = `You've exceeded your daily budget! Adjusting daily expenditure to $${adjustedExpenditure.toFixed(2)} for the rest of the month.`;
         notificationDiv.innerText = notification;
 
-        dailyLimitDiv.innerHTML = `Daily Limit: ₹₹{adjustedExpenditure.toFixed(2)}`;
+        dailyLimitDiv.innerHTML = `Daily Limit: $${adjustedExpenditure.toFixed(2)}`;
         dailyLimit = adjustedExpenditure;
       } else {
         notificationDiv.innerText = 'Daily expenditure is within budget.';
@@ -211,9 +211,9 @@
         notificationDiv.innerText = '30 days are over. Tracking completed.';
       } else {
         dailyLimit = remainingSalary / daysLeft;
-        dailyLimitDiv.innerHTML = `Daily Limit: ₹₹{dailyLimit.toFixed(2)}`;
-        daysLeftDiv.innerHTML = `Days Left: ₹{daysLeft}`;
-        remainingMoneyDiv.innerHTML = `Remaining money: ₹₹{remainingSalary.toFixed(2)}`;
+        dailyLimitDiv.innerHTML = `Daily Limit: $${dailyLimit.toFixed(2)}`;
+        daysLeftDiv.innerHTML = `Days Left: ${daysLeft}`;
+        remainingMoneyDiv.innerHTML = `Remaining money: $${remainingSalary.toFixed(2)}`;
       }
 
       // Update investment schemes based on the updated savings
@@ -228,7 +228,7 @@
         return;
       }
 
-      savingsTotalDiv.innerHTML = `Total Savings Goal: ₹₹{savingsGoal.toFixed(2)}`;
+      savingsTotalDiv.innerHTML = `Total Savings Goal: $${savingsGoal.toFixed(2)}`;
       savingsInfoDiv.style.display = 'block';
       setSavingButton.disabled = true;
 
@@ -245,7 +245,7 @@
       }
 
       totalSavings += savingAmount;
-      savingsTotalDiv.innerHTML = `Total Savings: ₹₹{totalSavings.toFixed(2)}`;
+      savingsTotalDiv.innerHTML = `Total Savings: $${totalSavings.toFixed(2)}`;
       savingsNotificationDiv.innerText = 'Amount added to savings.';
 
       // Update investment schemes based on the updated savings
